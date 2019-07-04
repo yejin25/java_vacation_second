@@ -26,8 +26,8 @@ public class Shape {
                 coords[i][j] = coordsTable[shape.ordinal()][i][j];
             }
         }
-        pieceShape = shape;
 
+        pieceShape = shape;
     }
 
     private void setX(int index, int x) {
@@ -62,6 +62,7 @@ public class Shape {
         for (int i = 0; i < 4; i++) {
             m = Math.min(m, coords[i][0]);
         }
+
         return m;
     }
 
@@ -70,12 +71,14 @@ public class Shape {
         for (int i = 0; i < 4; i++) {
             m = Math.min(m, coords[i][1]);
         }
+
         return m;
     }
 
     public Shape rotateLeft() {
-        if (pieceShape == Tetrominoes.SquareShape)
+        if (pieceShape == Tetrominoes.SquareShape) {
             return this;
+        }
 
         Shape result = new Shape();
         result.pieceShape = pieceShape;
@@ -84,12 +87,14 @@ public class Shape {
             result.setX(i, y(i));
             result.setY(i, -x(i));
         }
+
         return result;
     }
 
     public Shape rotateRight() {
-        if (pieceShape == Tetrominoes.SquareShape)
+        if (pieceShape == Tetrominoes.SquareShape) {
             return this;
+        }
 
         Shape result = new Shape();
         result.pieceShape = pieceShape;
@@ -98,6 +103,7 @@ public class Shape {
             result.setX(i, -y(i));
             result.setY(i, x(i));
         }
+
         return result;
     }
 }

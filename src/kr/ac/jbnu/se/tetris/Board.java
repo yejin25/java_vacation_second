@@ -29,7 +29,6 @@ public class Board extends JPanel implements ActionListener {
     Tetrominoes[] board;
 
     public Board(Tetris parent) {
-
         setFocusable(true);
         curPiece = new Shape();
         timer = new Timer(400, this);
@@ -63,8 +62,9 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public void start() {
-        if (isPaused)
+        if (isPaused) {
             return;
+        }
 
         isStarted = true;
         isFallingFinished = false;
@@ -76,8 +76,9 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void pause() {
-        if (!isStarted)
+        if (!isStarted) {
             return;
+        }
 
         isPaused = !isPaused;
         if (isPaused) {
@@ -99,8 +100,9 @@ public class Board extends JPanel implements ActionListener {
         for (int i = 0; i < BoardHeight; ++i) {
             for (int j = 0; j < BoardWidth; ++j) {
                 Tetrominoes shape = shapeAt(j, BoardHeight - i - 1);
-                if (shape != Tetrominoes.NoShape)
+                if (shape != Tetrominoes.NoShape) {
                     drawSquare(g, 0 + j * squareWidth(), boardTop + i * squareHeight(), shape);
+                }
             }
         }
 
@@ -108,8 +110,7 @@ public class Board extends JPanel implements ActionListener {
             for (int i = 0; i < 4; ++i) {
                 int x = curX + curPiece.x(i);
                 int y = curY - curPiece.y(i);
-                drawSquare(g, 0 + x * squareWidth(), boardTop + (BoardHeight - y - 1) * squareHeight(),
-                        curPiece.getShape());
+                drawSquare(g, 0 + x * squareWidth(), boardTop + (BoardHeight - y - 1) * squareHeight(), curPiece.getShape());
             }
         }
     }
@@ -117,21 +118,24 @@ public class Board extends JPanel implements ActionListener {
     private void dropDown() {
         int newY = curY;
         while (newY > 0) {
-            if (!tryMove(curPiece, curX, newY - 1))
+            if (!tryMove(curPiece, curX, newY - 1)) {
                 break;
+            }
             --newY;
         }
         pieceDropped();
     }
 
     private void oneLineDown() {
-        if (!tryMove(curPiece, curX, curY - 1))
+        if (!tryMove(curPiece, curX, curY - 1)) {
             pieceDropped();
+        }
     }
 
     private void clearBoard() {
-        for (int i = 0; i < BoardHeight * BoardWidth; ++i)
+        for (int i = 0; i < BoardHeight * BoardWidth; ++i) {
             board[i] = Tetrominoes.NoShape;
+        }
     }
 
     private void pieceDropped() {
@@ -143,8 +147,9 @@ public class Board extends JPanel implements ActionListener {
 
         removeFullLines();
 
-        if (!isFallingFinished)
+        if (!isFallingFinished) {
             newPiece();
+        }
     }
 
     private void newPiece() {
@@ -164,10 +169,14 @@ public class Board extends JPanel implements ActionListener {
         for (int i = 0; i < 4; ++i) {
             int x = newX + newPiece.x(i);
             int y = newY - newPiece.y(i);
-            if (x < 0 || x >= BoardWidth || y < 0 || y >= BoardHeight)
+
+            if (x < 0 || x >= BoardWidth || y < 0 || y >= BoardHeight) {
                 return false;
-            if (shapeAt(x, y) != Tetrominoes.NoShape)
+            }
+
+            if (shapeAt(x, y) != Tetrominoes.NoShape) {
                 return false;
+            }
         }
 
         curPiece = newPiece;
@@ -192,9 +201,11 @@ public class Board extends JPanel implements ActionListener {
 
             if (lineIsFull) {
                 ++numFullLines;
+
                 for (int k = i; k < BoardHeight - 1; ++k) {
-                    for (int j = 0; j < BoardWidth; ++j)
+                    for (int j = 0; j < BoardWidth; ++j) {
                         board[(k * BoardWidth) + j] = shapeAt(j, k + 1);
+                    }
                 }
             }
         }
@@ -241,8 +252,9 @@ public class Board extends JPanel implements ActionListener {
                 return;
             }
 
-            if (isPaused)
+            if (isPaused) {
                 return;
+            }
 
             switch (keycode) {
                 case KeyEvent.VK_LEFT:
