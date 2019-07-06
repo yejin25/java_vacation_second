@@ -12,48 +12,48 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-public class Board extends JPanel implements ActionListener {
+public class Board extends JPanel implements ActionListener {   //JPanel 상속받고 ActionListener 인터페이스 상속받음
 
-    final int BoardWidth = 10;
-    final int BoardHeight = 22;
+    final int BoardWidth = 10;  //보드 가로
+    final int BoardHeight = 22; //보드 높이
 
     Timer timer;
-    boolean isFallingFinished = false;
+    boolean isFallingFinished = false;  //블럭이 다 내려왔는지 확인
     boolean isStarted = false;
     boolean isPaused = false;
-    int numLinesRemoved = 0;
+    int numLinesRemoved = 0;    //한줄 채워서 지워진 횟수
     int curX = 0;
     int curY = 0;
     JLabel statusbar;
-    Shape curPiece;
+    Shape curPiece; //현재 블럭
     Tetrominoes[] board;
 
     public Board(Tetris parent) {
         setFocusable(true);
         curPiece = new Shape();
-        timer = new Timer(400, this);
+        timer = new Timer(400, this);   //0.4초마다 이벤트 호출
         timer.start();
 
         statusbar = parent.getStatusBar();
         board = new Tetrominoes[BoardWidth * BoardHeight];
-        addKeyListener(new TAdapter());
-        clearBoard();
+        addKeyListener(new TAdapter()); //key event
+        clearBoard();   //board init
     }
 
-    public void actionPerformed(ActionEvent e) {
-        if (isFallingFinished) {
+    public void actionPerformed(ActionEvent e) {    //블럭이 내려오는 것에 대한 함수?
+        if (isFallingFinished) {    //블럭이 다 내려오면
             isFallingFinished = false;
-            newPiece();
+            newPiece(); //새로운 블럭 생성
         } else {
-            oneLineDown();
+            oneLineDown();  //한줄 아래로 이동
         }
     }
 
-    int squareWidth() {
+    int squareWidth() { //블럭을 구성하는 네모 가로 길이
         return (int) getSize().getWidth() / BoardWidth;
     }
 
-    int squareHeight() {
+    int squareHeight() {    //블럭을 구성하는 네모 세로 길이
         return (int) getSize().getHeight() / BoardHeight;
     }
 
@@ -61,7 +61,7 @@ public class Board extends JPanel implements ActionListener {
         return board[(y * BoardWidth) + x];
     }
 
-    public void start() {
+    public void start() {   //테트리스 시작
         if (isPaused) {
             return;
         }
@@ -75,18 +75,18 @@ public class Board extends JPanel implements ActionListener {
         timer.start();
     }
 
-    private void pause() {
+    private void pause() {  //테트리스 정지
         if (!isStarted) {
             return;
         }
 
         isPaused = !isPaused;
-        if (isPaused) {
-            timer.stop();
-            statusbar.setText("paused");
-        } else {
-            timer.start();
-            statusbar.setText(String.valueOf(numLinesRemoved));
+        if (isPaused) { //테트리스 정지 상태이면
+            timer.stop();   //타이머 정지
+            statusbar.setText("paused");    //왼쪽 하단에 텍스트 설정
+        } else {    //테트리스 정지 상태x 이면
+            timer.start();  //타이머 시작
+            statusbar.setText(String.valueOf(numLinesRemoved)); //텍스트 줄지운 횟수로 설정
         }
         repaint();
     }
@@ -115,7 +115,7 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    private void dropDown() {
+    private void dropDown() {   //한번에 내려가는 거
         int newY = curY;
         while (newY > 0) {
             if (!tryMove(curPiece, curX, newY - 1)) {
@@ -126,7 +126,7 @@ public class Board extends JPanel implements ActionListener {
         pieceDropped();
     }
 
-    private void oneLineDown() {
+    private void oneLineDown() {    //한 줄씩 내려가는 거
         if (!tryMove(curPiece, curX, curY - 1)) {
             pieceDropped();
         }
@@ -138,7 +138,7 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    private void pieceDropped() {
+    private void pieceDropped() {   //블럭이 다 내려오고 나서
         for (int i = 0; i < 4; ++i) {
             int x = curX + curPiece.x(i);
             int y = curY - curPiece.y(i);
@@ -152,7 +152,7 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    private void newPiece() {
+    private void newPiece() {   //새로운 블럭 생성
         curPiece.setRandomShape();
         curX = BoardWidth / 2 + 1;
         curY = BoardHeight - 1 + curPiece.minY();
@@ -165,7 +165,7 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    private boolean tryMove(Shape newPiece, int newX, int newY) {
+    private boolean tryMove(Shape newPiece, int newX, int newY) {   //블럭의 이동 컨트롤
         for (int i = 0; i < 4; ++i) {
             int x = newX + newPiece.x(i);
             int y = newY - newPiece.y(i);
@@ -186,7 +186,7 @@ public class Board extends JPanel implements ActionListener {
         return true;
     }
 
-    private void removeFullLines() {
+    private void removeFullLines() {    //한줄이 완성되었을 때 지우기
         int numFullLines = 0;
 
         for (int i = BoardHeight - 1; i >= 0; --i) {
@@ -210,16 +210,16 @@ public class Board extends JPanel implements ActionListener {
             }
         }
 
-        if (numFullLines > 0) {
+        if (numFullLines > 0) { //지운 횟수
             numLinesRemoved += numFullLines;
-            statusbar.setText(String.valueOf(numLinesRemoved));
+            statusbar.setText(String.valueOf(numLinesRemoved)); //텍스트 줄지운 횟수로 설정
             isFallingFinished = true;
             curPiece.setShape(Tetrominoes.NoShape);
             repaint();
         }
     }
 
-    private void drawSquare(Graphics g, int x, int y, Tetrominoes shape) {
+    private void drawSquare(Graphics g, int x, int y, Tetrominoes shape) {  //블럭 색상 설정
         Color colors[] = { new Color(0, 0, 0), new Color(204, 102, 102), new Color(102, 204, 102),
                 new Color(102, 102, 204), new Color(204, 204, 102), new Color(204, 102, 204), new Color(102, 204, 204),
                 new Color(218, 170, 0) };
@@ -238,16 +238,16 @@ public class Board extends JPanel implements ActionListener {
         g.drawLine(x + squareWidth() - 1, y + squareHeight() - 1, x + squareWidth() - 1, y + 1);
     }
 
-    class TAdapter extends KeyAdapter {
-        public void keyPressed(KeyEvent e) {
+    class TAdapter extends KeyAdapter { //KeyAdapter 상속받
+        public void keyPressed(KeyEvent e) {    //키를 누르는 이벤트 발생 - KeyAdapter overide
 
             if (!isStarted || curPiece.getShape() == Tetrominoes.NoShape) {
                 return;
             }
 
-            int keycode = e.getKeyCode();
+            int keycode = e.getKeyCode();   //누른 키의 코드 가져오기
 
-            if (keycode == 'p' || keycode == 'P') {
+            if (keycode == 'p' || keycode == 'P') { //if keycode is "p" tetris's status is pause.
                 pause();
                 return;
             }
@@ -256,7 +256,7 @@ public class Board extends JPanel implements ActionListener {
                 return;
             }
 
-            switch (keycode) {
+            switch (keycode) {  //누른 키에 따른 동작 설정
                 case KeyEvent.VK_LEFT:
                     tryMove(curPiece, curX - 1, curY);
                     break;
