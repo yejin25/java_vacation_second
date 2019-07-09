@@ -7,10 +7,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
 
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+
+import javax.sound.sampled.*;
+import java.io.*;
+
 
 public class Board extends JPanel implements ActionListener {   //JPanel 상속받고 ActionListener 인터페이스 상속받음
 
@@ -21,6 +28,7 @@ public class Board extends JPanel implements ActionListener {   //JPanel 상속�
     boolean isFallingFinished = false;  //블럭이 다 내려왔는지 확인
     boolean isStarted = false;
     boolean isPaused = false;
+    boolean BgmStatus = false;
     int numLinesRemoved = 0;    //한줄 채워서 지워진 횟수
     int curX = 0;
     int curY = 0;
@@ -68,11 +76,13 @@ public class Board extends JPanel implements ActionListener {   //JPanel 상속�
 
         isStarted = true;
         isFallingFinished = false;
+        BgmStatus = true;
         numLinesRemoved = 0;
         clearBoard();
 
         newPiece();
         timer.start();
+        Play();
     }
 
     private void pause() {  //테트리스 정지
@@ -161,7 +171,9 @@ public class Board extends JPanel implements ActionListener {   //JPanel 상속�
             curPiece.setShape(Tetrominoes.NoShape);
             timer.stop();
             isStarted = false;
+            BgmStatus = false;
             statusbar.setText("game over");
+
         }
     }
 
@@ -281,5 +293,25 @@ public class Board extends JPanel implements ActionListener {   //JPanel 상속�
             }
 
         }
+    }
+
+public void Play(){
+        File Clap =new File("mario.wav");
+        if(!BgmStatus) {
+            return;
+        }
+        PlaySound(Clap);
+    }
+
+    static void PlaySound(File Sound)
+    {
+        try{
+            Clip clip = AudioSystem.getClip();
+            clip.open(AudioSystem.getAudioInputStream(Sound));
+            clip.start();
+        }
+        catch(Exception e){
+        }
+
     }
 }
