@@ -6,8 +6,7 @@ import java.io.File;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-public class Tetris extends JFrame {    //JFrame 상속받음 게임 GUI 설정
-
+public class Tetris extends JFrame{    //JFrame 상속받음 게임 GUI 설정
     JLabel statusbar;   //상태바 선언
 
     public Tetris() {
@@ -25,10 +24,11 @@ public class Tetris extends JFrame {    //JFrame 상속받음 게임 GUI 설정
     public JLabel getStatusBar() {
         return statusbar;
     }
-
     public static void main(String[] args) {
         Tetris game = new Tetris();
         game.setLocationRelativeTo(null);
         game.setVisible(true);
+        Bgm bgm = new Bgm(true);
+        bgm.start();
     }
 }
