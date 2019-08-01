@@ -28,6 +28,8 @@ public class Board extends JPanel implements ActionListener {   //JPanel 상속�
     JLabel statusbar;
     Shape curPiece; //현재 블럭
     Tetrominoes[] board;
+    Bgm bgm = new Bgm("젤다 테트리스.mp3",true);
+    Bgm bgm2 =  new Bgm("Happynow.mp3",true);
 
     public Board(Tetris parent) {
         setFocusable(true);
@@ -74,6 +76,7 @@ public class Board extends JPanel implements ActionListener {   //JPanel 상속�
 
         newPiece();
         timer.start();
+        bgm.start();
     }
 
     private void pause() {  //테트리스 정지
@@ -97,6 +100,7 @@ public class Board extends JPanel implements ActionListener {   //JPanel 상속�
 
         Dimension size = getSize();
         int boardTop = (int) size.getHeight() - BoardHeight * squareHeight();
+        g.drawLine(BoardWidth,0,BoardWidth,BoardHeight);
 
         for (int i = 0; i < BoardHeight; ++i) {
             for (int j = 0; j < BoardWidth; ++j) {
@@ -163,6 +167,8 @@ public class Board extends JPanel implements ActionListener {   //JPanel 상속�
             timer.stop();
             isStarted = false;
             statusbar.setText("game over");
+            bgm.close();
+            bgm2.close();
         }
     }
 
@@ -278,6 +284,12 @@ public class Board extends JPanel implements ActionListener {   //JPanel 상속�
                     break;
                 case 'D':
                     oneLineDown();
+                case 'N':
+                    bgm.close();
+                    bgm2.start();
+                case 'n':
+                    bgm.close();
+                    bgm2.start();
                     break;
             }
 

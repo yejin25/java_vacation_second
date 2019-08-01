@@ -1,30 +1,40 @@
 package kr.ac.jbnu.se.tetris;
 
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
+import javazoom.jl.player.Player;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 
 public class Bgm extends Thread{
-    private boolean isloop;
-    public Bgm(boolean isloop) {
+    private Player player;
+    private boolean is;
+    private File file;
+    private FileInputStream file2;
+    private BufferedInputStream file3;
+
+    public Bgm(String name,boolean is){
             try {
-                this.isloop = isloop;
+                this.is = is;
+                file = new File("/Users/seoyejin/2018_soko_tetris/src/"+name);
+                file2 = new FileInputStream(file);
+                file3 = new BufferedInputStream(file2);
+                player = new Player(file3);
             } catch (Exception e) {
             }
         }
-    public void close(Clip clip){
-        isloop = false;
-        clip.close();
+    public void close(){
+        is = false;
+        player.close();
         this.interrupt();
     }
     public void run(){
         try {
             do{
-                File Clap = new File("mario.wav");
-                Clip clip = AudioSystem.getClip();
-                clip.open(AudioSystem.getAudioInputStream(Clap)) ;
-                clip.start();
-            }while(isloop);
+                file2 = new FileInputStream(file);
+                file3 = new BufferedInputStream(file2);
+                player = new Player(file3);
+                player.play();
+            }while(is);
         }
         catch(Exception e){
 

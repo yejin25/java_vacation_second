@@ -1,8 +1,6 @@
 package kr.ac.jbnu.se.tetris;
 
 import java.awt.BorderLayout;
-import java.io.File;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
@@ -28,7 +26,5 @@ public class Tetris extends JFrame{    //JFrame 상속받음 게임 GUI 설정
         Tetris game = new Tetris();
         game.setLocationRelativeTo(null);
         game.setVisible(true);
-        Bgm bgm = new Bgm(true);
-        bgm.start();
     }
 }
