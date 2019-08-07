@@ -22,7 +22,7 @@ public class Board extends JPanel implements ActionListener {   //JPanel 상속�
     boolean isFallingFinished = false;  //블럭이 다 내려왔는지 확인
     boolean isStarted = false;
     boolean isPaused = false;
-    int numLinesRemoved = 0;    //한줄 채워서 지워진 횟수
+    int Score = 0;    //한줄 채워서 지워진 횟수
     int curX = 0;
     int curY = 0;
     JLabel statusbar;
@@ -71,7 +71,7 @@ public class Board extends JPanel implements ActionListener {   //JPanel 상속�
 
         isStarted = true;
         isFallingFinished = false;
-        numLinesRemoved = 0;
+        Score = 0;
         clearBoard();
 
         newPiece();
@@ -90,7 +90,7 @@ public class Board extends JPanel implements ActionListener {   //JPanel 상속�
             statusbar.setText("paused");    //왼쪽 하단에 텍스트 설정
         } else {    //테트리스 정지 상태x 이면
             timer.start();  //타이머 시작
-            statusbar.setText(String.valueOf(numLinesRemoved)); //텍스트 줄지운 횟수로 설정
+            statusbar.setText(String.valueOf(Score)); //텍스트 줄지운 횟수로 설정
         }
         repaint();
     }
@@ -100,8 +100,11 @@ public class Board extends JPanel implements ActionListener {   //JPanel 상속�
 
         Dimension size = getSize();
         int boardTop = (int) size.getHeight() - BoardHeight * squareHeight();
-        g.drawLine(BoardWidth,0,BoardWidth,BoardHeight);
-
+        for(int i= 0; i<200/BoardWidth; i++) {
+            int interval_w = 200 / BoardWidth;
+            g.drawLine(interval_w * i, 0, interval_w * i, BoardHeight * 20);
+            g.setColor(Color.GRAY);
+        }
         for (int i = 0; i < BoardHeight; ++i) {
             for (int j = 0; j < BoardWidth; ++j) {
                 Tetrominoes shape = shapeAt(j, BoardHeight - i - 1);
@@ -195,6 +198,7 @@ public class Board extends JPanel implements ActionListener {   //JPanel 상속�
 
     private void removeFullLines() {    //한줄이 완성되었을 때 지우기
         int numFullLines = 0;
+        int score = 0;
 
         for (int i = BoardHeight - 1; i >= 0; --i) {
             boolean lineIsFull = true;
@@ -208,7 +212,12 @@ public class Board extends JPanel implements ActionListener {   //JPanel 상속�
 
             if (lineIsFull) {
                 ++numFullLines;
-
+                if(numFullLines%5==0){
+                    score += 50;
+                }
+                else{
+                    score += 10;
+                }
                 for (int k = i; k < BoardHeight - 1; ++k) {
                     for (int j = 0; j < BoardWidth; ++j) {
                         board[(k * BoardWidth) + j] = shapeAt(j, k + 1);
@@ -218,8 +227,8 @@ public class Board extends JPanel implements ActionListener {   //JPanel 상속�
         }
 
         if (numFullLines > 0) { //지운 횟수
-            numLinesRemoved += numFullLines;
-            statusbar.setText(String.valueOf(numLinesRemoved)); //텍스트 줄지운 횟수로 설정
+            Score += score;
+            statusbar.setText(String.valueOf(Score)); //텍스트 줄지운 횟수로 설정
             isFallingFinished = true;
             curPiece.setShape(Tetrominoes.NoShape);
             repaint();
